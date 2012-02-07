@@ -1,0 +1,81 @@
+AWIDS - Advanced Weather Interactive Diagnostic System
+
+Author: Kelton Halbert
+Website: http://tempestchasing.com
+Email: keltonhalbert@tempestchasing.com
+
+Contributors: Greg Blumberg (The University of Oklahoma - School of Meteorology), Patrick Marsh (The National Severe Storms Laboratory / Hazardous Weather Testbed)
+
+If you would like to skip the how and why the program works and just learn how to run it, skip ahead to #3.
+
+1) About The Program:
+
+AWIDS came out of the desire to compare surface observations (METAR data) to model analyses. The hope was to provide a visual analysis that tampered as little with the data as possible to allow the forecaster - thats YOU - to decide what could be an error and what could be an actual weather phenomenon. After that came the idea to compute conserved variables and vector calculus, things normally done with model analyses, and see how they held up with raw observations. With help from Greg Blumberg and Patrick Marsh, I was able to plot several of these advanced diagnostics - hence the name of the program. Now the hope is that these advanced computations are of use to forecasters everywhere.
+
+AWIDS is built in Python; partly due to personal preference, and partly due to the desire to make open source code. This program is built on top of the MATPLOTLIB, Basemap, Numpy, and Scipy libraries.
+
+MATPLOTLIB - http://matplotlib.sourceforge.net/
+BASEMAP - http://sourceforge.net/projects/matplotlib/files/matplotlib-toolkits/
+SCIPY - http://www.scipy.org/
+NUMPY - http://numpy.scipy.org/
+
+2) How The Program Works:
+
+AWIDS works by decoding raw METAR files and loads them into dictionaries through the decoder.py file. This is then passed into gridmaker.py, which in turn loads the data onto a 40km grid taken from the operational RUC2. The blank areas are then interpolated using Natural Neighbor interpolation from the matplotlib.mlab.griddata package. Gridmaker then returns a tuple of (X, Y, Z, Contour Levels, Colormap, Plot Description) that AWIDS.py uses to make the plots. 
+
+
+3) How To Run the Program:
+
+Open up your terminal and change your directory to where you have AWIDS stored, i.e. 'cd /path/to/AWIDS'. Running is very simple: type in the command './AWIDS.py' without the quotes. This will run with the latest available METAR data and a command prompt will appear. To run archived data, run the following command: './AWIDS.py 12012218' where the date represents 'yymmddhh'. Data only goes as far back as the data stored on the server, which can be found at http://metfs1.agron.iastate.edu/data/text/sao/
+
+At the command prompt, you will see a print of the available options:
+	PAREA = 
+	PFUNC = 
+	WIND = 
+PAREA stands for Plot Area
+PFUNC stands for plot function
+WIND is for the type of wind barb to plot
+
+Valid Options for PAREA:
+	Any two letter state identifier or full state name
+		i.e. PAREA = TN or, PAREA = Tennessee
+	Any 4 character METAR station identifier
+		i.e. PAREA = KBNA, or PAREA = KOUN
+	NOTE: Not all state identifiers have been added yet. For best results, give a 		METAR station for the PAREA Argument
+
+Valid Options for PFUNC:
+	The following are valid plot functions and their descriptions:
+		TMPF - Temperature (Fahrenheit) 
+		TMPC - Temperature (Celsius)
+		DWPF - Dewpoint (Fahrenheit)
+		DWPC - Dewpoint (Celsius)
+		WSPD - Windspeed (Knots)
+		MSLP - Sea Level Pressure (Millibars)
+		THTA - Theta (Kelvin)
+		THTE - Theta-E (Kelvin)
+		MIXR - Mixing Ratio (1/kg)
+		RELH - Relative Humidity (%)
+		VORT - Vorticity (1/s * 10^5)
+		DIVR - Divergence (1/s * 10^5)
+		TPFA - Temperature Advection (Degrees Fahrenheit / 1 hour)
+		TPCA - Temperature Advection (Degrees Celsius / 1 hour)
+		MXRA - Mixing Ratio Advection (W / 1 hour)
+		THEA - Theta-E Advection (Degrees Kelvin / 1 hour)
+		3TPF - Three Hour Temperature (Fahrenheit) Tendency
+		3TPC - Three Hour Temperature (Celsius) Tendency
+		3DWF - Three Hour Dewpoint (Fahrenheit) Tendency
+		3DWC - Three Hour Dewpoint (Celsius) Tendency
+		3SLP - Three Hour Sea Level Pressure (Millibar) Tendency
+		3THA - Three Hour Theta (Kelvin) Tendency
+		3THE - Three Hour Theta-E (Kelvin) Tendency
+		3VOR - Three Hour Vorticity (1/s * 10^5) Tendency
+		3DIV - Three Hour Divergence (1/s * 10^5) Tendency
+Valid Options for WIND:
+	WIND = barb
+		This will plot only the observed METAR station wind barbs
+	WIND = grid
+		This will plot the interpolated winds for every grid point
+		WARNING: THIS OPTION SIGNIFICANTLY SLOWS DOWN PLOT GENERATION TIME!
+		RECOMMENDED USE IS FOR DEBUGGING PURPOSES ONLY!
+
+Please report errors/issues to keltonhalbert@tempestchasing.com
