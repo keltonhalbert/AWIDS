@@ -134,7 +134,7 @@ class GRIDMAKER( object ):
       c = [(0.0,'#29452B'), (0.4,'#89FC92'), (0.5,'#FEFEFE'), (0.6,'#FFAE00'), (1.0,'#7A4E1B')]
       mycm=mpl.colors.LinearSegmentedColormap.from_list('mycm',c)
       cmap = mycm
-      the_grid = self.grid( StationDict, DataDict, 'THTE' )
+      the_grid = self.grid( datatype='THTE' )
       the_grad = np.gradient(the_grid[2],40000)
       Advection = -1 * ( u_grid[2]*the_grad[1] + v_grid[2]*-1*the_grad[0] ) * 3600
     return (X,Y,Advection,levs,cmap,name)
