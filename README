@@ -33,7 +33,12 @@ Run the setup script by changing your directory to where you have AWIDS stored:
 	sudo python setup.py install
 After that, you can DELETE you AWIDS folder. You don't need it anymore.
 
-Open up your terminal and change your directory to where you have AWIDS.py stored, i.e. 'cd /path/to/AWIDS'. Running is very simple: type in the command './AWIDS.py' without the quotes. This will run with the latest available METAR data and a command prompt will appear. To run archived data, run the following command: './AWIDS.py 12012218' where the date represents 'yymmddhh'. Data only goes as far back as the data stored on the server, which can be found at http://metfs1.agron.iastate.edu/data/text/sao/
+Open up your terminal and change your directory to where you have AWIDS.py stored, i.e. 'cd /path/to/AWIDS'. 
+In your terminal prompt, type :
+	chmod +x ./AWIDS.PY
+	YOU ONLY HAVE TO DO THIS STEP ONCE!
+
+Running is very simple: type in the command './AWIDS.py' without the quotes. This will run with the latest available METAR data and a command prompt will appear. To run archived data, run the following command: './AWIDS.py 12012218' where the date represents 'yymmddhh'. Data only goes as far back as the data stored on the server, which can be found at http://metfs1.agron.iastate.edu/data/text/sao/
 
 At the command prompt, you will see a print of the available options:
 	PAREA = 
