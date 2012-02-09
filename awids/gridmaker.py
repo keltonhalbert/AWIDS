@@ -97,8 +97,8 @@ class GRIDMAKER( object ):
   
   def AdvectionGrid( self, **kwargs ):
     DataType = kwargs.get( 'datatype' )
-    u_grid = grid( datatype='UMET' )
-    v_grid = grid( datatype='VMET' )
+    u_grid = self.grid( datatype='UMET' )
+    v_grid = self.grid( datatype='VMET' )
     X = u_grid[0]
     Y = u_grid[1]
     if DataType.upper() == 'TPFA':
