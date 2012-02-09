@@ -107,7 +107,7 @@ class GRIDMAKER( object ):
       c = [(0.0,'#29452B'), (0.4,'#89FC92'), (0.5,'#FEFEFE'), (0.6,'#FFAE00'), (1.0,'#7A4E1B')]
       mycm=mpl.colors.LinearSegmentedColormap.from_list('mycm',c)
       cmap = mycm
-      tf_grid = gridmaker.grid( datatype='TMPF' )
+      tf_grid = self.grid( datatype='TMPF' )
       tf_grad = np.gradient( tf_grid[2], 40000)
       Advection = -1 * (u_grid[2] * tf_grad[1] + v_grid[2] * -1 * tf_grad[0]) * 3600
     if DataType.upper() == 'TPCA':
@@ -116,7 +116,7 @@ class GRIDMAKER( object ):
       c = [(0.0,'#29452B'), (0.4,'#89FC92'), (0.5,'#FEFEFE'), (0.6,'#FFAE00'), (1.0,'#7A4E1B')]
       mycm=mpl.colors.LinearSegmentedColormap.from_list('mycm',c)
       cmap = mycm
-      tc_grid = grid( datatype='TMPC' )
+      tc_grid = self.grid( datatype='TMPC' )
       tc_grad = np.gradient( tc_grid[2], 40000)
       Advection = -1 * (u_grid[2] * tc_grad[1] + v_grid[2] * -1 * tc_grad[0]) * 3600
     if DataType.upper() == 'MXRA':
@@ -125,7 +125,7 @@ class GRIDMAKER( object ):
       c = [(0.0,'#29452B'), (0.4,'#89FC92'), (0.5,'#FEFEFE'), (0.6,'#FFAE00'), (1.0,'#7A4E1B')]
       mycm=mpl.colors.LinearSegmentedColormap.from_list('mycm',c)
       cmap = mycm
-      mx_grid = grid( datatype='MIXR' )
+      mx_grid = self.grid( datatype='MIXR' )
       mx_grad = np.gradient( mx_grid[2], 40000 )
       Advection = -1 * ( u_grid[2] * mx_grad[1] + v_grid[2] * -1 * mx_grad[0] ) * 3600
     if DataType.upper() == 'THEA':
@@ -134,7 +134,7 @@ class GRIDMAKER( object ):
       c = [(0.0,'#29452B'), (0.4,'#89FC92'), (0.5,'#FEFEFE'), (0.6,'#FFAE00'), (1.0,'#7A4E1B')]
       mycm=mpl.colors.LinearSegmentedColormap.from_list('mycm',c)
       cmap = mycm
-      the_grid = grid( StationDict, DataDict, 'THTE' )
+      the_grid = self.grid( StationDict, DataDict, 'THTE' )
       the_grad = np.gradient(the_grid[2],40000)
       Advection = -1 * ( u_grid[2]*the_grad[1] + v_grid[2]*-1*the_grad[0] ) * 3600
     return (X,Y,Advection,levs,cmap,name)
