@@ -30,7 +30,7 @@ class OBSWX(object):
     self.RESULT = {} ## this is the result dictionary
     self.count = 0 ## will be used to tell us how many stations were not found
     if sys.platform.startswith( 'win' ):
-      stations = kwargs.get( 'stations', np.load( os.path.abspath( sys.prefix + '/lib/python' + '/site-packages/AWIDS-1.0.0-py2.7.egg/awids/' + 'stations.npz' ) ) ).keys()
+      stations = kwargs.get( 'stations', np.load( os.path.abspath( sys.prefix + '/lib/' + '/site-packages/AWIDS-1.0.0-py2.7.egg/awids/' + 'stations.npz' ) ) ).keys()
     else:
       stations = kwargs.get( 'stations', np.load( os.path.abspath( sys.prefix + '/lib/python' + sys.version[:3] + '/site-packages/AWIDS-1.0.0-py2.7.egg/awids/' + 'stations.npz' ) ) ).keys()
     cycle = kwargs.get( 'cycle', self.cycle )
