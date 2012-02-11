@@ -17,8 +17,8 @@ import sys
 class GRIDMAKER( object ):
 
   def __init__( self, **kwargs ):
-    self.StationDict = kwargs.get( 'StationDict', np.load( sys.prefix + '/lib/python' + sys.version[:3] + '/site-packages/AWIDS-1.0.0-py2.7.egg/awids/' + 'stations.npz' ) )
-    self.GridFile = kwargs.get( 'GridFile', np.load( sys.prefix + '/lib/python' + sys.version[:3] + '/site-packages/AWIDS-1.0.0-py2.7.egg/awids/' + 'sfcoa_lonlats.npz' ) )
+    self.StationDict = kwargs.get( 'StationDict', np.load( os.path.abspath( sys.prefix + '/lib/python' + sys.version[:3] + '/site-packages/AWIDS-1.0.0-py2.7.egg/awids/' + 'stations.npz' ) ) )
+    self.GridFile = kwargs.get( 'GridFile', np.load( os.path.abspath( sys.prefix + '/lib/python' + sys.version[:3] + '/site-packages/AWIDS-1.0.0-py2.7.egg/awids/' + 'sfcoa_lonlats.npz' ) ) )
     self.gridlons = self.GridFile[ 'lons' ]
     self.gridlats = self.GridFile[ 'lats' ]
     self.area = kwargs.get( 'area', 'CONUS' )

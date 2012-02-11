@@ -8,10 +8,11 @@
 import numpy as np
 from Projection import Projection as proj
 import sys
+import os
 
 class PlotBarbs( object ):
   def __init__( self, **kwargs ):
-    self.StationDict = np.load( sys.prefix + '/lib/python' + sys.version[:3] + '/site-packages/AWIDS-1.0.0-py2.7.egg/awids/' + 'stations.npz' )
+    self.StationDict = np.load( os.path.abspath( sys.prefix + '/lib/python' + sys.version[:3] + '/site-packages/AWIDS-1.0.0-py2.7.egg/awids/' + 'stations.npz' ) )
     self.area = kwargs.get( 'area', 'CONUS' )
     self.DataDict = kwargs.get( 'DatDict' )
     pmap = proj( area=self.area )

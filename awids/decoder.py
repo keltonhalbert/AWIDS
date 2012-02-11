@@ -28,7 +28,7 @@ class OBSWX(object):
     self.DatDict = {} ## this will serve as the intermediate dictionary for sorting
     self.RESULT = {} ## this is the result dictionary
     self.count = 0 ## will be used to tell us how many stations were not found
-    stations = kwargs.get( 'stations', np.load( sys.prefix + '/lib/python' + sys.version[:3] + '/site-packages/AWIDS-1.0.0-py2.7.egg/awids/' + 'stations.npz') ).keys()
+    stations = kwargs.get( 'stations', np.load( os.path.abspath( sys.prefix + '/lib/python' + sys.version[:3] + '/site-packages/AWIDS-1.0.0-py2.7.egg/awids/' + 'stations.npz' ) ) ).keys()
     cycle = kwargs.get( 'cycle', self.cycle )
     file = urllib.urlopen( 'http://metfs1.agron.iastate.edu/data/text/sao/'+ cycle + '.sao' )
     text = file.read().replace( '=' , '' ).replace( '\x03' , '' ).replace( '\x03\x01' , '' ).replace( '\r' , '' ).strip().split( '\n' )
