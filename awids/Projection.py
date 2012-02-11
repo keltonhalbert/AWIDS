@@ -8,6 +8,7 @@
 from mpl_toolkits.basemap import Basemap
 import numpy as np
 import sys
+import os
 
 class Projection( object ):
   def __init__( self, **kwargs ):

@@ -13,6 +13,7 @@ from Projection import Projection  as proj
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import sys
+import os
 
 class GRIDMAKER( object ):
 
