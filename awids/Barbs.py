@@ -7,15 +7,16 @@
 
 import numpy as np
 from Projection import Projection as proj
+import gridmaker
 import sys
 import os
 
 class PlotBarbs( object ):
   def __init__( self, **kwargs ):
-    if sys.platform.startswith( 'win' ):
-      self.StationDict = np.load( os.path.abspath( sys.prefix + '/lib/' + '/site-packages/AWIDS-1.0.0-py2.7.egg/awids/' + 'stations.npz' ) )
+    if kwargs.get('StationDict') == 'mesonet.npz':
+      self.StationDict = np.load( os.path.join( os.path.dirname(__file__), 'mesonet.npz' ) )
     else:
-      self.StationDict = np.load( os.path.abspath( sys.prefix + '/lib/python' + sys.version[:3] + '/site-packages/AWIDS-1.0.0-py2.7.egg/awids/' + 'stations.npz' ) )
+      self.StationDict = np.load( os.path.join( os.path.dirname(__file__), 'stations.npz' ) ) 
     self.area = kwargs.get( 'area', 'CONUS' )
     self.DataDict = kwargs.get( 'DatDict' )
     pmap = proj( area=self.area )
@@ -30,8 +31,9 @@ class PlotBarbs( object ):
     for stn in self.DataDict.keys():
       u = self.DataDict[ stn ][ 'UWIN' ]
       v = self.DataDict[ stn ][ 'VWIN' ]
-      if u == '-999.99' or v == '-999.99':
+      if np.isnan( u ) == True or np.isnan( v ) == True:
         continue
+      if not stn in self.StationDict.keys(): continue
       lon_lat_tuple = self.StationDict[ stn ]
       barblons.append( lon_lat_tuple[0] )
       barblats.append( lon_lat_tuple[-1] )
@@ -41,6 +43,7 @@ class PlotBarbs( object ):
     return self.m.barbs( bx, by, U, V, fill_empty=False, length=5.7 )
     
   def GridBarbs( self ):
-    u = gridmaker.grid( self.StationDict, self.DataDict, 'UWIN', self.area )
-    v = gridmaker.grid( self.StationDict, self.DataDict, 'VWIN', self.area )
+    gmaker = gridmaker.GRIDMAKER( datdict=self.DataDict, area=self.area, StationDict=self.StationDict )
+    u = gmaker.grid( datatype='UWIN' )
+    v = gmaker.grid( datatype='VWIN' )
     return self.m.barbs( u[0], u[1], u[2], v[2], fill_empty=False, length=5.7 )

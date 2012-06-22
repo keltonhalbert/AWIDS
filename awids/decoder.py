@@ -30,12 +30,12 @@ class OBSWX(object):
     self.RESULT = {} ## this is the result dictionary
     self.count = 0 ## will be used to tell us how many stations were not found
     if sys.platform.startswith( 'win' ):
-      stations = kwargs.get( 'stations', np.load( os.path.abspath( sys.prefix + '/lib/' + '/site-packages/AWIDS-1.0.0-py2.7.egg/awids/' + 'stations.npz' ) ) ).keys()
+      stations = kwargs.get( 'stations', np.load( os.path.join( os.path.dirname(__file__), 'stations.npz' ) ) ).keys()
     else:
-      stations = kwargs.get( 'stations', np.load( os.path.abspath( sys.prefix + '/lib/python' + sys.version[:3] + '/site-packages/AWIDS-1.0.0-py2.7.egg/awids/' + 'stations.npz' ) ) ).keys()
+      stations = kwargs.get( 'stations', np.load( os.path.join( os.path.dirname(__file__), 'stations.npz' ) ) ).keys()
     cycle = kwargs.get( 'cycle', self.cycle )
     file = urllib.urlopen( 'http://metfs1.agron.iastate.edu/data/text/sao/'+ cycle + '.sao' )
-    text = file.read().replace( '=' , '' ).replace( '\x03' , '' ).replace( '\x03\x01' , '' ).replace( '\r' , '' ).strip().split( '\n' )
+    text = file.read().replace( '\n' , '' ).replace( '\x03' , '' ).replace( '\x03\x01' , '' ).replace( '\r' , '' ).strip().split( '=' )
     ## process the text 
     for line in text:
       if line.startswith( 'METAR' ):
@@ -69,8 +69,8 @@ class OBSWX(object):
         self.wdir = '-999.99'
         self.wspd = '-999.99'
         self.gust = '-999.99'
-      if re.search( '(M[0-9][0-9])/(M[0-9][0-9])|([0-9][0-9])/(M[0-9][0-9])|(M[0-9][0-9])/(NIL)|([0-9][0-9])/(NIL)|([0-9][0-9])/([0-9][0-9])', stndat ):
-        self.tempdat = re.search( '(M[0-9][0-9])/(M[0-9][0-9])|([0-9][0-9])/(M[0-9][0-9])|(M[0-9][0-9])/(NIL)|([0-9][0-9])/(NIL)|([0-9][0-9])/([0-9][0-9])', stndat ).group().replace( 'M','-' ).split( '/' )
+      if re.search( '\s(M[0-9][0-9])/(M[0-9][0-9])\s|\s([0-9][0-9])/(M[0-9][0-9])\s|\s(M[0-9][0-9])/(NIL)\s|\s([0-9][0-9])/(NIL)\s|\s([0-9][0-9])/([0-9][0-9])\s', stndat ):
+        self.tempdat = re.search( '\s(M[0-9][0-9])/(M[0-9][0-9])\s|\s([0-9][0-9])/(M[0-9][0-9])\s|\s(M[0-9][0-9])/(NIL)\s|\s([0-9][0-9])/(NIL)\s|\s([0-9][0-9])/([0-9][0-9])\s', stndat ).group().replace( 'M','-' ).split( '/' )
       else:
         self.tempdat = ['-999.99', '-999.99']
       if re.search( 'SLP[0-9][0-9][0-9]',stndat ):
@@ -90,7 +90,11 @@ class OBSWX(object):
         self.vis = re.search( '[0-9][0-9]SM|[0-9]SM', stndat ).group().replace( 'SM', '' )
       else:
         self.vis = '-999.99'
-      
+      if re.search ('\s(P[0-9][0-9][0-9][0-9])', stndat ):
+        self.precip = re.search ('\s(P[0-9][0-9][0-9][0-9])', stndat ).group().replace( 'P', '' )
+        self.precip = float( str( self.precip )[:2] + '.' + str( self.precip )[3:] )
+      else:
+        self.precip = '-999.99'
       self.RESULT[ stn ] = {}
       if self.tempdat[0] != '-999.99':
         self.RESULT[ stn ][ 'TMPC' ] = int( self.tempdat[0] )
@@ -122,6 +126,7 @@ class OBSWX(object):
       self.RESULT[ stn ][ 'MSLP' ] = self.slpdat
       self.RESULT[ stn ][ 'ALTI' ] = self.altdat
       self.RESULT[ stn ][ 'VISI' ] = self.vis
+      self.RESULT[ stn ][ 'PCPN' ] = self.precip
     file.close()
     return self.RESULT
   def UpperAir(self, cycle, stations):

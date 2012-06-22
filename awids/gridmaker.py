@@ -14,16 +14,17 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import sys
 import os
+import barnesinterp
+import solver
 
 class GRIDMAKER( object ):
 
   def __init__( self, **kwargs ):
-    if sys.platform.startswith( 'win' ):
-      self.StationDict = kwargs.get( 'StationDict', np.load( os.path.abspath( sys.prefix + '/lib/' + '/site-packages/AWIDS-1.0.0-py2.7.egg/awids/' + 'stations.npz' ) ) )
-      self.GridFile = kwargs.get( 'GridFile', np.load( os.path.abspath( sys.prefix + '/lib/' + '/site-packages/AWIDS-1.0.0-py2.7.egg/awids/' + 'sfcoa_lonlats.npz' ) ) )
+    if kwargs.get('StationDict') == 'mesonet.npz':
+      self.StationDict = np.load( os.path.join( os.path.dirname(__file__), 'mesonet.npz' ) ) 
     else:
-      self.StationDict = kwargs.get( 'StationDict', np.load( os.path.abspath( sys.prefix + '/lib/python' + sys.version[:3] + '/site-packages/AWIDS-1.0.0-py2.7.egg/awids/' + 'stations.npz' ) ) )
-      self.GridFile = kwargs.get( 'GridFile', np.load( os.path.abspath( sys.prefix + '/lib/python' + sys.version[:3] + '/site-packages/AWIDS-1.0.0-py2.7.egg/awids/' + 'sfcoa_lonlats.npz' ) ) )
+      self.StationDict = np.load( os.path.join( os.path.dirname(__file__), 'stations.npz' ) )
+    self.GridFile = kwargs.get( 'GridFile', np.load( os.path.join( os.path.dirname(__file__), 'sfcoa_lonlats.npz' ) ) )
     self.gridlons = self.GridFile[ 'lons' ]
     self.gridlats = self.GridFile[ 'lats' ]
     self.area = kwargs.get( 'area', 'CONUS' )
@@ -35,7 +36,9 @@ class GRIDMAKER( object ):
   def grid( self, **kwargs ):
     DataType = kwargs.get( 'datatype' )
     DataDict = kwargs.get( 'datdict', self.DataDict )
-    plotparms = { 'TMPF': ('Temperature (F)', np.arange(-14,110,2), plt.cm.spectral), 'TMPC': ('Temperature (C)', np.arange(-25,44,1), plt.cm.spectral), 'DWPF': ('Dewpoint (F)', np.arange(0,80,2), plt.cm.BrBG), 'DWPC': ('Dewpoint (C)', np.arange(-20,26,1), plt.cm.BrBG), 'WSPD': ('Windspeed (kts)', np.arange(5,50,5), plt.cm.cool), 'MSLP': ('Sea Level Pressure (mb)', np.arange(925,1050,2), plt.cm.spectral), 'THTA': (r'Theta (K) $\theta$', np.arange(250,322,2), plt.cm.spectral), 'MIXR': (r'Mixing Ratio $\frac{g}{kg}$', np.arange(0,28,1), plt.cm.gist_earth_r), 'THTE': (r'Theta-E (K) $\theta_e$', np.arange(240,400,5), plt.cm.spectral), 'RELH': ('Relative Humidity (%)', np.arange(0,101,1), plt.cm.spectral), 'UWIN': ('U component of wind (kts)', np.arange(-50,50,2), plt.cm.BrBG), 'VWIN': ('V component of wind (kts)', np.arange(-50,50,2), plt.cm.BrBG), 'UMET': ('U component of wind (m/s)', np.arange(-50,50,2), plt.cm.BrBG), 'VMET': ('V component of wind (m/s)', np.arange(-50,50,2), plt.cm.BrBG), 'VISI': ('Surface Visibility (Miles)', np.arange(0,13,1), plt.cm.pink ) }
+    c = [(0.0,'#FFFFFF'), (0.2,'#66FF33'), (0.3,'#006600'), (0.4,'#00FFFF'), (0.5,'#000099'), (0.7, '#FF0000'), (1.0, '#FF00CC')]
+    mycm=mpl.colors.LinearSegmentedColormap.from_list('mycm',c)
+    plotparms = { 'TMPF': ('Temperature (F)', np.arange(-14,110,2), plt.cm.spectral), 'TMPC': ('Temperature (C)', np.arange(-25,44,1), plt.cm.spectral), 'DWPF': ('Dewpoint (F)', np.arange(0,80,2), plt.cm.BrBG), 'DWPC': ('Dewpoint (C)', np.arange(-20,26,1), plt.cm.BrBG), 'WSPD': ('Windspeed (kts)', np.arange(5,50,5), plt.cm.cool), 'PRES': ('Sea Level Pressure (mb)', np.arange(825,1050,5), plt.cm.spectral), 'THTA': (r'Theta (K) $\theta$', np.arange(250,322,2), plt.cm.spectral), 'MIXR': (r'Mixing Ratio $\frac{g}{kg}$', np.arange(0,28,1), plt.cm.gist_earth_r), 'THTE': (r'Theta-E (K) $\theta_e$', np.arange(240,400,5), plt.cm.spectral), 'RELH': ('Relative Humidity (%)', np.arange(0,101,1), plt.cm.spectral), 'UWIN': ('U component of wind (kts)', np.arange(-50,50,2), plt.cm.BrBG), 'VWIN': ('V component of wind (kts)', np.arange(-50,50,2), plt.cm.BrBG), 'UMET': ('U component of wind (m/s)', np.arange(-50,50,2), plt.cm.BrBG), 'VMET': ('V component of wind (m/s)', np.arange(-50,50,2), plt.cm.BrBG), 'VISI': ('Surface Visibility (Miles)', np.arange(0,13,1), plt.cm.pink ), 'RAIN': ('Precipitation Since 00Z', np.arange(0,100,1), mycm) }
     StationID = DataDict.keys()
     data_to_plot = []
     lons = []
@@ -45,15 +48,18 @@ class GRIDMAKER( object ):
     levs = plotparms[ DataType ][1]
     for S in StationID:
       dat = DataDict[ S ][ DataType ]
-      if dat == '-999.99' or dat == '': continue
+      if np.isnan( dat ) == True: continue
       else:
-        data_to_plot.append( dat )
-        lon_lat_tuple = self.StationDict[ S ]
-        lons.append( lon_lat_tuple[0] )
-        lats.append( lon_lat_tuple[-1] )
+        if not S in self.StationDict.keys(): continue
+        else:
+          data_to_plot.append( dat )
+          lon_lat_tuple = self.StationDict[ S ]
+          lons.append( lon_lat_tuple[0] )
+          lats.append( lon_lat_tuple[-1] )
     xi, yi = self.m( lons, lats )
     X, Y = self.m( self.gridlons, self.gridlats )
-    Z = griddata( xi, yi, data_to_plot, X, Y, interp='nn' )
+    Z = barnesinterp.Interp( X, Y, xi, yi, data_to_plot, 50000)
+   # Z = griddata( xi, yi, data_to_plot, X, Y, interp='nn' )
     return ( X, Y, Z, levs, cmap, name )
   
   def grid_3hr( self, **kwargs ):
@@ -67,8 +73,8 @@ class GRIDMAKER( object ):
     levs = plotparms[ DataType ][1]
     cmap = plotparms[ DataType ][2]
     if DataType.upper() == '3VOR' or DataType.upper() == '3DIV':
-      hour_1 = self.VectorGrid( datatype=plotparms[ DataType ][-1] )
-      hour_3 = self.VectorGrid( datatype=plotparms[ DataType ][-1], datdict=TendDict )
+      hour_1 = self.TriangulateKinematics( datatype=plotparms[ DataType ][-1], datdict=DataDict )
+      hour_3 = self.TriangulateKinematics( datatype=plotparms[ DataType ][-1], datdict=TendDict )
     else:
       hour_1 = self.grid( datatype=plotparms[ DataType ][-1] )
       hour_3 = self.grid( datatype=plotparms[ DataType ][-1], datdict=TendDict )
@@ -90,15 +96,66 @@ class GRIDMAKER( object ):
       name = r'Surface Vorticity ($\mathrm{s^{-1}*{10^5}}$)'
       levs = np.arange( 1, 21, 1 ) 
       cmap = plt.cm.gist_heat_r
-      Z = ( v_grad[1] - -1 * u_grad[0] ) * pow( 10, 5 )
+     # Z = ( v_grad[1] - -1 * u_grad[0] ) * pow( 10, 5 )
+      Z = ( v_grad[1] - -1 * u_grad[0] )
     if DataType.upper() == 'DIVR':
       name = 'Surface Divergence ($S^{-1}*{10^5}$)'
       levs = np.arange( -25, 26, 1 )
       c = [(0.0,'#29452B'), (0.4,'#89FC92'), (0.5,'#FEFEFE'), (0.6,'#FFAE00'), (1.0,'#7A4E1B')]
       mycm=mpl.colors.LinearSegmentedColormap.from_list('mycm',c)
       cmap = mycm
-      Z = ( u_grad[1] + -1 * v_grad[0] ) * pow( 10, 5 )
+      Z = ( u_grad[1] + -1 * v_grad[0] )
     return ( X, Y, Z, levs, cmap, name )
+
+  def TriangulateKinematics( self, **kwargs ):
+    DataType = kwargs.get( 'datatype' )
+    DataDict = kwargs.get( 'datdict' )
+    stations = self.StationDict.keys()
+    filename = kwargs.get( 'filename', 'mesonet.npz' )
+    triangulate = solver.triangulate( DataDict )
+    triangles = triangulate[2]
+    centers = triangulate[0]
+    x = triangulate[-2]
+    y = triangulate[-1]
+    cent = []
+    data_to_plot = []
+    cx = []
+    cy = []
+    c = [(0.0,'#29452B'), (0.4,'#89FC92'), (0.5,'#FEFEFE'), (0.6,'#FFAE00'), (1.0,'#7A4E1B')]
+    mycm=mpl.colors.LinearSegmentedColormap.from_list('mycm',c)
+    for idx, t in enumerate( triangles ):
+      index = [ t[0], t[1], t[2] ]
+      centers[ idx ] = np.array( [ x[ t ].mean(), y[ t ].mean() ] )
+      c = centers[ idx ]
+      x_points = x[ index ]
+      y_points = y[ index ]
+      x1,y1 = x_points[0], y_points[0]
+      x2,y2 = x_points[1], y_points[1]
+      x3,y3 = x_points[2], y_points[2]
+      for stn in stations:
+        stn_x,stn_y = self.m( self.StationDict[ stn ][0], self.StationDict[ stn ][1] )
+        if ( stn_x, stn_y ) == ( x1, y1 ):
+          stn1 = stn
+        if ( stn_x, stn_y ) == ( x2, y2 ):
+          stn2 = stn
+        if ( stn_x, stn_y ) == ( x3, y3 ):
+          stn3 = stn
+      u1,u2,u3 = DataDict[ stn1 ][ 'UMET' ],DataDict[ stn2 ][ 'UMET' ],DataDict[ stn3 ][ 'UMET' ]
+      v1,v2,v3 = DataDict[ stn1 ][ 'VMET' ],DataDict[ stn2 ][ 'VMET' ],DataDict[ stn3 ][ 'VMET' ]
+      kinematics = solver.kinematic_solver( u1,u2,u3, v1,v2,v3, x1,x2,x3, y1,y2,y3 )
+      cx.append( c[0] )
+      cy.append( c[1] )
+      if DataType == 'VORT':
+        data_to_plot.append( kinematics[3] * pow(10,5) )
+        levs = np.arange( 1, 21, 1 )
+        cmap = plt.cm.gist_heat_r
+      if DataType == 'DIVR':
+        data_to_plot.append( kinematics[2] * pow(10,5) )
+        levs = np.arange( -25, 26, 1 )
+        cmap = mycm
+    X, Y = self.m( self.gridlons, self.gridlats )
+    Z = barnesinterp.Interp( X, Y, cx, cy, data_to_plot, 60000)
+    return ( X, Y, Z, levs, cmap, 'Surface Divergence' )
   
   def AdvectionGrid( self, **kwargs ):
     DataType = kwargs.get( 'datatype' )

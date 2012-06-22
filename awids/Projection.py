@@ -12,10 +12,7 @@ import os
 
 class Projection( object ):
   def __init__( self, **kwargs ):
-    if sys.platform.startswith( 'win' ):
-      self.StationDict = kwargs.get( 'stationdict', np.load( os.path.abspath( sys.prefix + '/lib/' + '/site-packages/AWIDS-1.0.0-py2.7.egg/awids/' + 'stations.npz' ) ) )
-    else:
-      self.StationDict = kwargs.get( 'stationdict', np.load( os.path.abspath( sys.prefix + '/lib/python' + sys.version[:3] + '/site-packages/AWIDS-1.0.0-py2.7.egg/awids/' + 'stations.npz' ) ) )
+    self.StationDict = kwargs.get( 'stationdict', np.load( os.path.join( os.path.dirname(__file__), 'stations.npz' ) ) )
     self.area = kwargs.get( 'area', 'CONUS')
     
   def proj( self ):

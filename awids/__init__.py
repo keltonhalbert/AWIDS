@@ -4,6 +4,6 @@ import gridmaker
 import thermo
 import vectors
 
-__version__ = '1.0.0'
+__version__ = '1.2.0'
 
-__all__ = ['Barbs', 'decoder', 'gridmaker', 'thermo', 'vectors', 'Projection']
+__all__ = ['Barbs', 'decoder', 'gridmaker', 'mesoreader', 'Projection', 'solver', 'thermo', 'vectors']
