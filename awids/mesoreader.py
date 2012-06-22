@@ -5,6 +5,15 @@
 #Non-commercial license clause can be waived with written permission by the author. Contact Kelton Halbert <keltonhalbert@tempestchasing.com> for permission to use commercially. 
 
 #This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
+
+"""
+  Given the argument filedate, it will pull mesonet data. if filedate starts
+  with 'htt', it will pull the data from the mesonet server. Otherwise, it will
+  look for a local file in your current directory. 
+  
+  Returns a dictionary of dictionaries, where
+  dictionary[ STATION_ID ][ DATATYPE ] = value
+"""
 import vectors
 from thermo import Thermo
 import urllib

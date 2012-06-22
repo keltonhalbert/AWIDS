@@ -52,6 +52,7 @@ class Thermo(object):
     mixr = ( ( 0.622 * e_hpa )/( hpa - e_hpa ) )
     self.thetae = theta*np.exp( ( ( 2.50 * pow( 10, 6 ) ) * mixr )/( 1005 * tpk ) )
     return self.thetae
+    
   def relhumid( self, tpc, tdc ):
     tpk = int(tpc) + 273.15
     tdk = int(tdc) + 273.15

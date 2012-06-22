@@ -5,6 +5,15 @@
 
 #This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
 
+"""
+  solver.kinematic_solver -- Howard Bluestein's method of solving for 
+  the kinematic field using triangulation rather than the finite
+  difference method.
+  
+  solver.triangulate -- preforms a Delaunay triangulation on
+  the Oklahoma Mesonet
+"""
+
 import numpy as np
 from Projection import Projection as P
 import matplotlib.delaunay as md
