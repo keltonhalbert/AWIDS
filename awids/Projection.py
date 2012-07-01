@@ -153,8 +153,8 @@ class Projection( object ):
                   resolution='l',area_thresh=1000.,projection='lcc',\
                   lat_1=40,lat_2=30,lat_0=40,lon_0=-76)
     if area == 'MESONET':
-        map = Basemap(projection='lcc', resolution='l', width=grid_width, height=grid_height,
-                        lat_0=center_latitude, lon_0=center_longitude, lat_1=30., lat_2=45.)
+        map = Basemap(projection='lcc', resolution='l', width=550000, height=400000,
+                        lat_0=35.4, lon_0=-97.2, lat_1=30., lat_2=45.)
     if area in StationID:
       lon_lat = self.StationDict[ area ]
       map = Basemap(width=1500000,height=1100000,
