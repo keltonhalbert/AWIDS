@@ -24,7 +24,10 @@ class GRIDMAKER( object ):
       self.StationDict = np.load( os.path.join( os.path.dirname(__file__), 'mesonet.npz' ) ) 
     else:
       self.StationDict = np.load( os.path.join( os.path.dirname(__file__), 'stations.npz' ) )
-    self.GridFile = kwargs.get( 'GridFile', np.load( os.path.join( os.path.dirname(__file__), 'sfcoa_lonlats.npz' ) ) )
+    if kwargs.get( 'GridFile' ) == 'mesonet_oa.npz':
+      self.GridFile = np.load( os.path.join( os.path.dirname(__file__), 'mesonet_oa.npz' ) )
+    else:
+      self.GridFile = np.load( os.path.join( os.path.dirname(__file__), 'sfcoa_lonlats.npz' ) )
     self.gridlons = self.GridFile[ 'lons' ]
     self.gridlats = self.GridFile[ 'lats' ]
     self.area = kwargs.get( 'area', 'CONUS' )
