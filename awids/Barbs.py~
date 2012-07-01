@@ -43,7 +43,7 @@ class PlotBarbs( object ):
     return self.m.barbs( bx, by, U, V, fill_empty=False, length=5.7 )
     
   def GridBarbs( self ):
-    gmaker = gridmaker.GRIDMAKER( datdict=self.DataDict, area=self.area, StationDict=self.StationDict )
+    gmaker = gridmaker.GRIDMAKER( datdict=self.DataDict, area=self.area, StationDict=self.StationDict, GridFile='mesonet_oa.npz' )
     u = gmaker.grid( datatype='UWIN' )
     v = gmaker.grid( datatype='VWIN' )
     return self.m.barbs( u[0], u[1], u[2], v[2], fill_empty=False, length=5.7 )
