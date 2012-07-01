@@ -53,7 +53,7 @@ def triangulate( datadict ):
     del datadict['WALT']
 
   stnfile = np.load( os.path.join( os.path.dirname(__file__), 'mesonet.npz' ) )
-  m = P( stationdict=stnfile, area='OK' ).proj()
+  m = P( stationdict=stnfile, area='MESONET' ).proj()
   gridX = []
   gridY = []
   stations = []
