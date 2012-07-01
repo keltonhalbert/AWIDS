@@ -35,6 +35,7 @@ class GRIDMAKER( object ):
     self.TendDict = kwargs.get( 'tenddict' )
     mproj = proj( area=self.area, stations=self.StationDict )
     self.m = mproj.proj()
+    self.RoI = kwargs.get( 'RoI', 80000 )
 
   def grid( self, **kwargs ):
     DataType = kwargs.get( 'datatype' )
@@ -61,7 +62,7 @@ class GRIDMAKER( object ):
           lats.append( lon_lat_tuple[-1] )
     xi, yi = self.m( lons, lats )
     X, Y = self.m( self.gridlons, self.gridlats )
-    Z = barnesinterp.Interp( X, Y, xi, yi, data_to_plot, 50000)
+    Z = barnesinterp.Interp( X, Y, xi, yi, data_to_plot, self.RoI)
    # Z = griddata( xi, yi, data_to_plot, X, Y, interp='nn' )
     return ( X, Y, Z, levs, cmap, name )
   
@@ -157,7 +158,7 @@ class GRIDMAKER( object ):
         levs = np.arange( -25, 26, 1 )
         cmap = mycm
     X, Y = self.m( self.gridlons, self.gridlats )
-    Z = barnesinterp.Interp( X, Y, cx, cy, data_to_plot, 60000)
+    Z = barnesinterp.Interp( X, Y, cx, cy, data_to_plot, self.RoI)
     return ( X, Y, Z, levs, cmap, 'Surface Divergence' )
   
   def AdvectionGrid( self, **kwargs ):
