@@ -17,6 +17,10 @@ class PlotBarbs( object ):
       self.StationDict = np.load( os.path.join( os.path.dirname(__file__), 'mesonet.npz' ) )
     else:
       self.StationDict = np.load( os.path.join( os.path.dirname(__file__), 'stations.npz' ) ) 
+    if kwargs.get('GridFile') == 'mesonet_oa.npz':
+      self.GridFile = np.load( os.path.join( os.path.dirname(__file__), 'mesonet_oa.npz' ) )
+    else:
+      self.GridFile = np.load( os.path.join( os.path.dirname(__file__), 'sfcoa_lonlats.npz' ) )
     self.area = kwargs.get( 'area', 'CONUS' )
     self.DataDict = kwargs.get( 'DatDict' )
     pmap = proj( area=self.area )
@@ -43,7 +47,7 @@ class PlotBarbs( object ):
     return self.m.barbs( bx, by, U, V, fill_empty=False, length=5.7 )
     
   def GridBarbs( self ):
-    gmaker = gridmaker.GRIDMAKER( datdict=self.DataDict, area=self.area, StationDict=self.StationDict, GridFile='mesonet_oa.npz' )
+    gmaker = gridmaker.GRIDMAKER( GridFile=self.GridFile, datdict=self.DataDict, area=self.area, StationDict=self.StationDict )
     u = gmaker.grid( datatype='UWIN' )
     v = gmaker.grid( datatype='VWIN' )
     return self.m.barbs( u[0], u[1], u[2], v[2], fill_empty=False, length=5.7 )
