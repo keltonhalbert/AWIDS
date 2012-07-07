@@ -22,19 +22,19 @@ class PlotBarbs( object ):
     else:
       self.GridFile = np.load( os.path.join( os.path.dirname(__file__), 'sfcoa_lonlats.npz' ) )
     self.area = kwargs.get( 'area', 'CONUS' )
-    self.DataDict = kwargs.get( 'DatDict' )
     pmap = proj( area=self.area )
     self.m = pmap.proj()
     
-  def StnBarbs( self ):
+  def StnBarbs( self, **kwargs ):
+    DataDict = kwargs.get( 'DatDict' )
     StationIDs = self.StationDict.keys()
     U = []
     V = []
     barblons = []
     barblats = []
-    for stn in self.DataDict.keys():
-      u = self.DataDict[ stn ][ 'UWIN' ]
-      v = self.DataDict[ stn ][ 'VWIN' ]
+    for stn in DataDict.keys():
+      u = DataDict[ stn ][ 'UWIN' ]
+      v = DataDict[ stn ][ 'VWIN' ]
       if np.isnan( u ) == True or np.isnan( v ) == True:
         continue
       if not stn in self.StationDict.keys(): continue
@@ -46,8 +46,9 @@ class PlotBarbs( object ):
     bx, by = self.m( barblons, barblats )
     return self.m.barbs( bx, by, U, V, fill_empty=False, length=5.7 )
     
-  def GridBarbs( self ):
-    gmaker = gridmaker.GRIDMAKER( GridFile=self.GridFile, datdict=self.DataDict, area=self.area, StationDict=self.StationDict )
+  def GridBarbs( self, **kwargs ):
+    DataDict = kwargs.get( 'DatDict' )
+    gmaker = gridmaker.GRIDMAKER( GridFile=self.GridFile, datdict=DataDict, area=self.area, StationDict=self.StationDict )
     u = gmaker.grid( datatype='UWIN' )
     v = gmaker.grid( datatype='VWIN' )
     return self.m.barbs( u[0], u[1], u[2], v[2], fill_empty=False, length=5.7 )

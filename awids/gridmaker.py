@@ -31,15 +31,13 @@ class GRIDMAKER( object ):
     self.gridlons = self.GridFile[ 'lons' ]
     self.gridlats = self.GridFile[ 'lats' ]
     self.area = kwargs.get( 'area', 'CONUS' )
-    self.DataDict = kwargs.get( 'datdict' )
-    self.TendDict = kwargs.get( 'tenddict' )
     mproj = proj( area=self.area, stations=self.StationDict )
     self.m = mproj.proj()
     self.RoI = kwargs.get( 'RoI', 80000 )
 
   def grid( self, **kwargs ):
     DataType = kwargs.get( 'datatype' )
-    DataDict = kwargs.get( 'datdict', self.DataDict )
+    DataDict = kwargs.get( 'datdict' )
     c = [(0.0,'#FFFFFF'), (0.2,'#66FF33'), (0.3,'#006600'), (0.4,'#00FFFF'), (0.5,'#000099'), (0.7, '#FF0000'), (1.0, '#FF00CC')]
     mycm=mpl.colors.LinearSegmentedColormap.from_list('mycm',c)
     plotparms = { 'TMPF': ('Temperature (F)', np.arange(-14,110,2), plt.cm.spectral), 'TMPC': ('Temperature (C)', np.arange(-25,44,1), plt.cm.spectral), 'DWPF': ('Dewpoint (F)', np.arange(0,80,2), plt.cm.BrBG), 'DWPC': ('Dewpoint (C)', np.arange(-20,26,1), plt.cm.BrBG), 'WSPD': ('Windspeed (kts)', np.arange(5,50,5), plt.cm.cool), 'PRES': ('Sea Level Pressure (mb)', np.arange(825,1050,5), plt.cm.spectral), 'THTA': (r'Theta (K) $\theta$', np.arange(250,322,2), plt.cm.spectral), 'MIXR': (r'Mixing Ratio $\frac{g}{kg}$', np.arange(0,28,1), plt.cm.gist_earth_r), 'THTE': (r'Theta-E (K) $\theta_e$', np.arange(240,400,5), plt.cm.spectral), 'RELH': ('Relative Humidity (%)', np.arange(0,101,1), plt.cm.spectral), 'UWIN': ('U component of wind (kts)', np.arange(-50,50,2), plt.cm.BrBG), 'VWIN': ('V component of wind (kts)', np.arange(-50,50,2), plt.cm.BrBG), 'UMET': ('U component of wind (m/s)', np.arange(-50,50,2), plt.cm.BrBG), 'VMET': ('V component of wind (m/s)', np.arange(-50,50,2), plt.cm.BrBG), 'VISI': ('Surface Visibility (Miles)', np.arange(0,13,1), plt.cm.pink ), 'RAIN': ('Precipitation Since 00Z', np.arange(0,100,1), mycm) }
@@ -67,8 +65,8 @@ class GRIDMAKER( object ):
     return ( X, Y, Z, levs, cmap, name )
   
   def grid_3hr( self, **kwargs ):
-    DataDict = self.DataDict
-    TendDict = self.TendDict
+    DataDict = kwargs.get( 'datdict' )
+    TendDict = kwargs.get( 'tenddict' )
     DataType = kwargs.get( 'datatype' )
     c = [(0.0,'#29452B'), (0.4,'#89FC92'), (0.5,'#FEFEFE'), (0.6,'#FFAE00'), (1.0,'#7A4E1B')]
     mycm=mpl.colors.LinearSegmentedColormap.from_list('mycm',c)

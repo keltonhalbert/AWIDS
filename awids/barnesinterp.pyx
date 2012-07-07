@@ -47,7 +47,7 @@ cpdef tuple GetWeight( np.ndarray[double, ndim=2] gridX, np.ndarray[double, ndim
             dict[ grdkey ].append( ( z, weight) )
           ## add to existing entry for an existing gridpoint
           except KeyError:
-            dict[ grdkey ] = [( z, weight)]
+            dict[ grdkey ] = [( z, weight)] 
         else: continue
   ## return the dictionary of dict[ gridpoint ] = weight
   return ( dict, keys )
