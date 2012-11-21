@@ -8,7 +8,7 @@ cpath = os.path.join( os.path.dirname(__file__), 'awids/barnesinterp.pyx' )
 
 setup(
       name = "AWIDS",
-      version = "1.2.0",
+      version = "1.3.0",
       author = "Kelton Halbert",
       author_email = "keltonhalbert@tempestchasing.com",
       description = ("A surface weather data plotting package built on MATPLOTLIB, NUMPY, and SCIPY"),
@@ -17,7 +17,7 @@ setup(
       url = "https://github.com/keltonhalbert/AWIDS",
       packages=['awids'],
       package_data = {'awids':['*.npz', '*.pyx', '*.so', '*.c']},
-      classifiers=["Development Status :: 2 - Pre-Alpha"], 
+      classifiers=["Development Status :: 3 - Alpha"], 
       cmdclass = {'build_ext': build_ext},
       ext_modules = [Extension("barnesinterp", [cpath], include_dirs=[numpy.get_include()])]
       )
