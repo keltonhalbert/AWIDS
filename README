@@ -8,6 +8,8 @@ Author: Kelton Halbert
 Website: http://tempestchasing.com
 Email: keltonhalbert@tempestchasing.com
 
+Special Thanks: Greg Thompson of UCAR for the list of METAR stations and their coordinates. This list can be found at http://weather.rap.ucar.edu/surface/stations.txt
+
 Contributors: Greg Blumberg (The University of Oklahoma - School of Meteorology), Patrick Marsh (The National Severe Storms Laboratory / Hazardous Weather Testbed), Tim Supinie (The University of Oklahoma)
 
 If you would like to skip the how and why the program works and just learn how to run it, skip ahead to #3.
