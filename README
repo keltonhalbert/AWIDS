@@ -90,6 +90,11 @@ Valid Options for PFUNC:
 		3THE - Three Hour Theta-E (Kelvin) Tendency
 		3VOR - Three Hour Vorticity (1/s * 10^5) Tendency
 		3DIV - Three Hour Divergence (1/s * 10^5) Tendency
+Valis options for SAT:
+	SAT = VIS
+		Visible Satellite data
+	SAT = IR
+		IR Satellite Data
 Valid Options for WIND:
 	WIND = BARB
 		This will plot only the observed METAR station wind barbs
