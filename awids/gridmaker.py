@@ -41,7 +41,7 @@ class Gridmaker( Projection ):
     cmap = plotparms[ DataType ][2]
     levs = plotparms[ DataType ][1]
     for S in StationID:
-      dat = DataDict[ S ][ DataType[0] ]
+      dat = DataDict[ S ][ DataType ]
       if np.isnan( dat ) == True: continue
       else:
         if not S in self.StationDict.keys(): continue
@@ -50,10 +50,7 @@ class Gridmaker( Projection ):
           lon_lat_tuple = self.StationDict[ S ]
           lons.append( lon_lat_tuple[0] )
           lats.append( lon_lat_tuple[-1] )
-    for dtype in DataType:
-      if np.isnan( dat ) == True: continue
-      else:
-        data_to_plot.append( dat )
+          data_to_plot.append( dat )
     xi, yi = self.m( lons, lats )
     X, Y = self.m( self.gridlons, self.gridlats )
     Z = barnesinterp.Interp( X, Y, xi, yi, data_to_plot, self.RoI)
