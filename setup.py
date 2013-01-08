@@ -8,7 +8,7 @@ cpath = os.path.join( os.path.dirname(__file__), 'awids/barnesinterp.pyx' )
 
 setup(
       name = "AWIDS",
-      version = "1.3.0",
+      version = "1.3.1",
       author = "Kelton Halbert",
       author_email = "keltonhalbert@tempestchasing.com",
       description = ("A surface weather data plotting package built on MATPLOTLIB, NUMPY, and SCIPY"),

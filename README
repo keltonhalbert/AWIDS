@@ -47,18 +47,21 @@ Open up your terminal and change your directory to where you have AWIDS.py store
 In your terminal prompt, type :
 	chmod +x ./AWIDS.PY
 
-Running is very simple: type in the command './AWIDS.py' without the quotes. This will run with the latest available METAR data and a command prompt will appear. To run archived data, run the following command: './AWIDS.py 12012218' where the date represents 'yymmddhh'. Data only goes as far back as the data stored on the server, which can be found at http://metfs1.agron.iastate.edu/data/text/sao/
+Running is very simple: type in the command './AWIDS.py' without the quotes. This will run with the latest available METAR data and a command prompt will appear. 
 
 At the command prompt, you will see a print of the available options:
 	PAREA = 
 	PFUNC = 
+	SAT = 
 	WIND = 
 PAREA stands for Plot Area
 PFUNC stands for plot function
+SAT dictates the satellite data type
 WIND is for the type of wind barb to plot
 
 Valid Options for PAREA:
 	PAREA = CONUS will plot the continental US data
+	PAREA = GOES-E is for satellite data plots
 	PAREA = insert_station_id_here (i.e. KBNA ) will center the plot on a particular station
 Valid Options for PFUNC:
 	The following are valid plot functions and their descriptions:
@@ -88,7 +91,9 @@ Valid Options for PFUNC:
 		3VOR - Three Hour Vorticity (1/s * 10^5) Tendency
 		3DIV - Three Hour Divergence (1/s * 10^5) Tendency
 Valid Options for WIND:
-	WIND = barb
+	WIND = BARB
 		This will plot only the observed METAR station wind barbs
+	WIND = STRM
+		This plots streamlines. Works best with PAREA = CONUS or GOES-E. Broken for everything else.
 
 Please report errors/issues to keltonhalbert@tempestchasing.com

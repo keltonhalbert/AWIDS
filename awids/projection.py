@@ -32,4 +32,6 @@ class Projection( Grids ):
                        rsphere=(6378137.00,6356752.3142),\
                        resolution='l',area_thresh=1000.,projection='lcc',\
                        lat_1=40,lat_2=30,lat_0=38.5,lon_0=-98.5)
+    if self.area == 'GOES-E':
+      self.m = Basemap( llcrnrlon=-113.1333, llcrnrlat=16.3691, urcrnrlon=-68.286995, urcrnrlat=63.109997, projection='lcc', resolution='i', area_thresh=1000, rsphere=6371229.0, lat_1=25., lat_0=25., lon_0=-95. )
     return self.m

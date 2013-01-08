@@ -25,7 +25,7 @@ class Gridmaker( Projection ):
 
   def grid( self, **kwargs ):
     ## get the data from the dictionary and the type of data to plot
-    DataType = kwargs.get( 'datatype' )
+    DataType = kwargs.get( 'datatype' ).split( '!' )
     DataDict = kwargs.get( 'datdict' )
     ## define a custom colormap
     c = [(0.0,'#FFFFFF'), (0.2,'#66FF33'), (0.3,'#006600'), (0.4,'#00FFFF'), (0.5,'#000099'), (0.7, '#FF0000'), (1.0, '#FF00CC')]
@@ -41,7 +41,7 @@ class Gridmaker( Projection ):
     cmap = plotparms[ DataType ][2]
     levs = plotparms[ DataType ][1]
     for S in StationID:
-      dat = DataDict[ S ][ DataType ]
+      dat = DataDict[ S ][ DataType[0] ]
       if np.isnan( dat ) == True: continue
       else:
         if not S in self.StationDict.keys(): continue
@@ -50,6 +50,10 @@ class Gridmaker( Projection ):
           lon_lat_tuple = self.StationDict[ S ]
           lons.append( lon_lat_tuple[0] )
           lats.append( lon_lat_tuple[-1] )
+    for dtype in DataType:
+      if np.isnan( dat ) == True: continue
+      else:
+        data_to_plot.append( dat )
     xi, yi = self.m( lons, lats )
     X, Y = self.m( self.gridlons, self.gridlats )
     Z = barnesinterp.Interp( X, Y, xi, yi, data_to_plot, self.RoI)
