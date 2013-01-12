@@ -34,4 +34,5 @@ def get_satellite( **kwargs ):
   sat = sat.data
   ## convert data from unsigned bytes to shorts
   sat = sat & 0xff
+  d.close()
   return ( x, y, sat )
