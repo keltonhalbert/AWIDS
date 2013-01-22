@@ -58,7 +58,7 @@ while True:
     grid = gmaker.VectorGrid( datatype=plotvar[ 'PFUNC' ], datdict=data )
   elif plotvar[ 'PFUNC' ] == 'TPFA' or plotvar[ 'PFUNC' ] == 'TPCA' or plotvar[ 'PFUNC' ] == 'MXRA' or plotvar[ 'PFUNC' ] == 'THEA':
     grid = gmaker.AdvectionGrid( datatype=plotvar[ 'PFUNC' ], datdict=data )
-  else: 
+  else:
     grid = gmaker.grid( datatype=plotvar[ 'PFUNC' ], datdict=data )
   if plotvar[ 'PAREA' ] == 'GOES-E':
     print 'Downloading Satellite Data'
@@ -73,9 +73,9 @@ while True:
   else:
     CS = m.contourf( grid[0], grid[1], grid[2], grid[3], cmap=grid[4], extend='both' )
   ## Plot the wind barbs
-#  if plotvar['WIND'] == 'GRID':
-#    barbplot = b.PlotBarbs( area=plotvar['PAREA'], DatDict=data )
-#    barb = barbplot.GridBarbs()
+  #  if plotvar['WIND'] == 'GRID':
+  #    barbplot = b.PlotBarbs( area=plotvar['PAREA'], DatDict=data )
+  #    barb = barbplot.GridBarbs()
   if plotvar['WIND'] == 'BARB':
     b = Plotbarbs( projection=m, DatDict=data, RoI=250000, area=plotvar[ 'PAREA' ] )
     barbs = b.StnBarbs()
