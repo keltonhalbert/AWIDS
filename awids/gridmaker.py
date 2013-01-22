@@ -25,7 +25,7 @@ class Gridmaker( Projection ):
 
   def grid( self, **kwargs ):
     ## get the data from the dictionary and the type of data to plot
-    DataType = kwargs.get( 'datatype' )
+    DataType = kwargs.get( 'datatype' ).split( '!' )
     DataDict = kwargs.get( 'datdict' )
     ## define a custom colormap
     c = [(0.0,'#FFFFFF'), (0.2,'#66FF33'), (0.3,'#006600'), (0.4,'#00FFFF'), (0.5,'#000099'), (0.7, '#FF0000'), (1.0, '#FF00CC')]
@@ -34,27 +34,31 @@ class Gridmaker( Projection ):
     ## also includes titple attributes
     plotparms = { 'TMPF': ('Temperature (F)', np.arange(-14,110,2), plt.cm.spectral), 'TMPC': ('Temperature (C)', np.arange(-25,44,1), plt.cm.spectral), 'DWPF': ('Dewpoint (F)', np.arange(0,80,2), plt.cm.BrBG), 'DWPC': ('Dewpoint (C)', np.arange(-20,26,1), plt.cm.BrBG), 'WSPD': ('Windspeed (kts)', np.arange(5,50,5), plt.cm.cool), 'PRES': ('Sea Level Pressure (mb)', np.arange(825,1050,5), plt.cm.spectral), 'THTA': (r'Theta (K) $\theta$', np.arange(250,322,2), plt.cm.spectral), 'MIXR': (r'Mixing Ratio $\frac{g}{kg}$', np.arange(0,28,1), plt.cm.gist_earth_r), 'THTE': (r'Theta-E (K) $\theta_e$', np.arange(240,400,5), plt.cm.spectral), 'RELH': ('Relative Humidity (%)', np.arange(0,101,1), plt.cm.spectral), 'UWIN': ('U component of wind (kts)', np.arange(-50,50,2), plt.cm.BrBG), 'VWIN': ('V component of wind (kts)', np.arange(-50,50,2), plt.cm.BrBG), 'UMET': ('U component of wind (m/s)', np.arange(-50,50,2), plt.cm.BrBG), 'VMET': ('V component of wind (m/s)', np.arange(-50,50,2), plt.cm.BrBG), 'VISI': ('Surface Visibility (Miles)', np.arange(0,13,1), plt.cm.pink ), 'RAIN': ('Precipitation Since 00Z', np.arange(0,100,1), mycm) }
     StationID = DataDict.keys()
-    data_to_plot = []
-    lons = []
-    lats = []
-    name = plotparms[ DataType ][0]
-    cmap = plotparms[ DataType ][2]
-    levs = plotparms[ DataType ][1]
-    for S in StationID:
-      dat = DataDict[ S ][ DataType ]
-      if np.isnan( dat ) == True: continue
-      else:
-        if not S in self.StationDict.keys(): continue
+    returned_list = []
+    for dtype in DataType:
+      dtype = dtype.strip()
+      data_to_plot = []
+      lons = []
+      lats = []
+      name = plotparms[ dtype ][0]
+      cmap = plotparms[ dtype ][2]
+      levs = plotparms[ dtype ][1]
+      for S in StationID:
+        dat = DataDict[ S ][ dtype ]
+        if np.isnan( dat ) == True: continue
         else:
-          data_to_plot.append( dat )
-          lon_lat_tuple = self.StationDict[ S ]
-          lons.append( lon_lat_tuple[0] )
-          lats.append( lon_lat_tuple[-1] )
-    xi, yi = self.m( lons, lats )
-    X, Y = self.m( self.gridlons, self.gridlats )
-    Z = barnesinterp.Interp( X, Y, xi, yi, data_to_plot, self.RoI)
+          if not S in self.StationDict.keys(): continue
+          else:
+            data_to_plot.append( dat )
+            lon_lat_tuple = self.StationDict[ S ]
+            lons.append( lon_lat_tuple[0] )
+            lats.append( lon_lat_tuple[-1] )
+      xi, yi = self.m( lons, lats )
+      X, Y = self.m( self.gridlons, self.gridlats )
+      Z = barnesinterp.Interp( X, Y, xi, yi, data_to_plot, self.RoI)
    # Z = griddata( xi, yi, data_to_plot, X, Y, interp='nn' )
-    return ( X, Y, Z, levs, cmap, name )
+      returned_list.append( ( X, Y, Z, levs, cmap, name ) )
+    return returned_list
   
   def grid_3hr( self, **kwargs ):
     DataDict = kwargs.get( 'datdict' )

@@ -5,20 +5,20 @@
 
 #This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
 
-# cython: boundscheck=False
-
 import numpy as np
 import datetime
 cimport cython
 cimport numpy as np
+@cython.boundscheck(False)
+@cython.wraparound(False)
 
-
-cpdef tuple GetWeight( np.ndarray[double, ndim=2] gridX, np.ndarray[double, ndim=2] gridY, list xi, list yi, list zi, double Range ):
+cpdef tuple GetWeight( np.ndarray[np.double_t, ndim=2] gridX, np.ndarray[np.double_t, ndim=2] gridY, list xi, list yi, list zi, double Range ):
   
   cdef double RoI
   cdef double i, j, x, y, z, distance, weight
   cdef list keys
   cdef tuple grdkey
+  cdef np.ndarray[np.double_t, ndim=2] GX, GY
   
   ## This helps keep the weighting function balanced while saving
   ## computation power in calculating square roots

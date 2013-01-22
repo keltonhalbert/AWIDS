@@ -48,8 +48,8 @@ class Plotbarbs( Gridmaker ):
     arrowsize = kwargs.get('arrowsize', 1)
     color = kwargs.get('color', 'c')
     linewidth = kwargs.get('linewidth', 1)
-    ugrid = self.grid( datatype='UWIN', datdict=self.DataDict )
-    vgrid = self.grid( datatype='VWIN', datdict=self.DataDict )
+    ugrid = self.grid( datatype='UWIN', datdict=self.DataDict )[0]
+    vgrid = self.grid( datatype='VWIN', datdict=self.DataDict )[0]
     U = ugrid[2]
     V = vgrid[2]
     x = ugrid[0][0]
