@@ -59,7 +59,7 @@ while True:
   elif plotvar[ 'PFUNC' ] == 'TPFA' or plotvar[ 'PFUNC' ] == 'TPCA' or plotvar[ 'PFUNC' ] == 'MXRA' or plotvar[ 'PFUNC' ] == 'THEA':
     grid = gmaker.AdvectionGrid( datatype=plotvar[ 'PFUNC' ], datdict=data )
   else:
-    grid = gmaker.grid( datatype=plotvar[ 'PFUNC' ], datdict=data )
+    grid = gmaker.grid( datatype=plotvar[ 'PFUNC' ], datdict=data )[0]
   if plotvar[ 'PAREA' ] == 'GOES-E':
     print 'Downloading Satellite Data'
     satellite = sat( projection=m, SAT=plotvar['SAT'] )
