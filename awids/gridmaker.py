@@ -1,14 +1,14 @@
-#AWIDS - Advanced Weather Interactive Diagnostic System
+#AWID - Advanced Weather Interactive Diagnostic System
 #(c) <2012> Kelton Halbert
 
-#Non-commercial license clause can be waived with written permission by the author. Contact Kelton Halbert <keltonhalbert@tempestchasing.com> for permission to use commercially.
+#Non-commercial license clause can be waived with written permission by the author. Contact Kelton Halbert <keltonhalbert@tempestchasing.com> for permission to use commercially. 
 
 #This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
 
 
 import numpy as np
 from math import pow
-from projection import Projection
+from projection import Projection 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import sys
@@ -17,15 +17,15 @@ import barnesinterp
 #import solver
 
 class Gridmaker( Projection ):
-  
+
   def __init__( self, **kwargs ):
     ## get the Radius of Influence for the Barnes Analysis
     Projection.__init__( self, **kwargs )
     self.RoI = kwargs.get( 'RoI', 80000 )
-  
+
   def grid( self, **kwargs ):
     ## get the data from the dictionary and the type of data to plot
-    DataType = kwargs.get( 'datatype' )
+    DataType = kwargs.get( 'datatype' ).split( '!' )
     DataDict = kwargs.get( 'datdict' )
     ## define a custom colormap
     c = [(0.0,'#FFFFFF'), (0.2,'#66FF33'), (0.3,'#006600'), (0.4,'#00FFFF'), (0.5,'#000099'), (0.7, '#FF0000'), (1.0, '#FF00CC')]
@@ -34,28 +34,32 @@ class Gridmaker( Projection ):
     ## also includes titple attributes
     plotparms = { 'TMPF': ('Temperature (F)', np.arange(-14,110,2), plt.cm.spectral), 'TMPC': ('Temperature (C)', np.arange(-25,44,1), plt.cm.spectral), 'DWPF': ('Dewpoint (F)', np.arange(0,80,2), plt.cm.BrBG), 'DWPC': ('Dewpoint (C)', np.arange(-20,26,1), plt.cm.BrBG), 'WSPD': ('Windspeed (kts)', np.arange(5,50,5), plt.cm.cool), 'PRES': ('Sea Level Pressure (mb)', np.arange(825,1050,5), plt.cm.spectral), 'THTA': (r'Theta (K) $\theta$', np.arange(250,322,2), plt.cm.spectral), 'MIXR': (r'Mixing Ratio $\frac{g}{kg}$', np.arange(0,28,1), plt.cm.gist_earth_r), 'THTE': (r'Theta-E (K) $\theta_e$', np.arange(240,400,5), plt.cm.spectral), 'RELH': ('Relative Humidity (%)', np.arange(0,101,1), plt.cm.spectral), 'UWIN': ('U component of wind (kts)', np.arange(-50,50,2), plt.cm.BrBG), 'VWIN': ('V component of wind (kts)', np.arange(-50,50,2), plt.cm.BrBG), 'UMET': ('U component of wind (m/s)', np.arange(-50,50,2), plt.cm.BrBG), 'VMET': ('V component of wind (m/s)', np.arange(-50,50,2), plt.cm.BrBG), 'VISI': ('Surface Visibility (Miles)', np.arange(0,13,1), plt.cm.pink ), 'RAIN': ('Precipitation Since 00Z', np.arange(0,100,1), mycm) }
     StationID = DataDict.keys()
-    data_to_plot = []
-    lons = []
-    lats = []
-    name = plotparms[ DataType ][0]
-    cmap = plotparms[ DataType ][2]
-    levs = plotparms[ DataType ][1]
-    for S in StationID:
-      dat = DataDict[ S ][ DataType ]
-      if np.isnan( dat ) == True: continue
-      else:
-        if not S in self.StationDict.keys(): continue
+    returned_list = []
+    for dtype in DataType:
+      dtype = dtype.strip()
+      data_to_plot = []
+      lons = []
+      lats = []
+      name = plotparms[ dtype ][0]
+      cmap = plotparms[ dtype ][2]
+      levs = plotparms[ dtype ][1]
+      for S in StationID:
+        dat = DataDict[ S ][ dtype ]
+        if np.isnan( dat ) == True: continue
         else:
-          data_to_plot.append( dat )
-          lon_lat_tuple = self.StationDict[ S ]
-          lons.append( lon_lat_tuple[0] )
-          lats.append( lon_lat_tuple[-1] )
-    xi, yi = self.m( lons, lats )
-    X, Y = self.m( self.gridlons, self.gridlats )
-    Z = barnesinterp.Interp( X, Y, xi, yi, data_to_plot, self.RoI)
-    # Z = griddata( xi, yi, data_to_plot, X, Y, interp='nn' )
-    return ( X, Y, Z, levs, cmap, name )
-
+          if not S in self.StationDict.keys(): continue
+          else:
+            data_to_plot.append( dat )
+            lon_lat_tuple = self.StationDict[ S ]
+            lons.append( lon_lat_tuple[0] )
+            lats.append( lon_lat_tuple[-1] )
+      xi, yi = self.m( lons, lats )
+      X, Y = self.m( self.gridlons, self.gridlats )
+      Z = barnesinterp.Interp( X, Y, xi, yi, data_to_plot, self.RoI )
+   # Z = griddata( xi, yi, data_to_plot, X, Y, interp='nn' )
+      returned_list.append( ( X, Y, Z, levs, cmap, name ) )
+    return returned_list
+  
   def grid_3hr( self, **kwargs ):
     DataDict = kwargs.get( 'datdict' )
     TendDict = kwargs.get( 'tenddict' )
@@ -66,10 +70,10 @@ class Gridmaker( Projection ):
     name = plotparms[ DataType ][0]
     levs = plotparms[ DataType ][1]
     cmap = plotparms[ DataType ][2]
-    #  if DataType.upper() == '3VOR' or DataType.upper() == '3DIV':
-    #    hour_1 = self.TriangulateKinematics( datatype=plotparms[ DataType ][-1], datdict=DataDict )
-    #    hour_3 = self.TriangulateKinematics( datatype=plotparms[ DataType ][-1], datdict=TendDict )
-    #  else:
+  #  if DataType.upper() == '3VOR' or DataType.upper() == '3DIV':
+  #    hour_1 = self.TriangulateKinematics( datatype=plotparms[ DataType ][-1], datdict=DataDict )
+  #    hour_3 = self.TriangulateKinematics( datatype=plotparms[ DataType ][-1], datdict=TendDict )
+  #  else:
     hour_1 = self.grid( datatype=plotparms[ DataType ][-1], datdict=DataDict )
     hour_3 = self.grid( datatype=plotparms[ DataType ][-1], datdict=TendDict )
     X = hour_1[0]
@@ -80,15 +84,15 @@ class Gridmaker( Projection ):
   def VectorGrid( self, **kwargs ):
     DataDict = kwargs.get( 'datdict' )
     DataType = kwargs.get( 'datatype' )
-    u_grid = self.grid( datatype='UMET', datdict=DataDict )
-    v_grid = self.grid( datatype='VMET', datdict=DataDict )
+    u_grid = self.grid( datatype='UMET', datdict=DataDict )[0]
+    v_grid = self.grid( datatype='VMET', datdict=DataDict )[0]
     u_grad = np.gradient( u_grid[2], 40000 )
     v_grad = np.gradient( v_grid[2], 40000 )
     X = u_grid[0]
     Y = u_grid[1]
     if DataType.upper() == 'VORT':
       name = r'Surface Vorticity ($\mathrm{s^{-1}*{10^5}}$)'
-      levs = np.arange( 1, 21, 1 )
+      levs = np.arange( 1, 21, 1 ) 
       cmap = plt.cm.gist_heat_r
       Z = ( v_grad[1] - -1 * u_grad[0] ) * pow( 10, 5 )
     if DataType.upper() == 'DIVR':
