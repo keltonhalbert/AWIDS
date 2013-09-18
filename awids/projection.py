@@ -23,7 +23,7 @@ class Projection( Grids ):
                        lat_0=35.4, lon_0=-97.2, lat_1=30., lat_2=45.)
     if self.area in self.StationIDs:
       lon_lat = self.StationDict[ self.area ]
-      self.m = Basemap(width=500000,height=400000,
+      self.m = Basemap(width=700000,height=600000,
                        rsphere=(6378137.00,6356752.3142),\
                        resolution='i',area_thresh=1000.,projection='lcc',\
                        lat_1=40,lat_2=30,lat_0=lon_lat[1],lon_0=lon_lat[0])
