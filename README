@@ -101,4 +101,4 @@ Valid Options for WIND:
 	WIND = STRM
 		This plots streamlines. Works best with PAREA = CONUS or GOES-E. Broken for everything else.
 
-Please report errors/issues to keltonhalbert@tempestchasing.com
+Please report errors/issues to keltonhalbert@ou.edu
