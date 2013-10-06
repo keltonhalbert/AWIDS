@@ -3,7 +3,7 @@
 
 #GUI for AWIDS
 #Based on AWIDS.py by Kelton Halbert
-#Tkinter GUI by Tarmo Tanilsoo
+#Tkinter GUI by Tarmo Tanilsoo(tarmotanilsoo@gmail.com)
 
 from awids.readmetar import OBSWX
 from awids.loadgrids import Grids
