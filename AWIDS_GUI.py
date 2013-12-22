@@ -66,6 +66,9 @@ def tostatus(text): #Updating status
 def startgen():
     fp=filled.get()
     cp=contoured.get()
+    if fp == "None" and cp == "None":
+        tostatus("Error: No variables selected")
+        return -1
     tunit=tempunit.get()
     wstyle=windstyle.get()
     dtype=displaytype.get()
@@ -134,8 +137,13 @@ def startgen():
         tostatus("Plotting streamlines...")
         b = Plotbarbs( projection=m, DatDict=data, RoI=250000, area=dtype )
         barbs = b.StreamLines(density=3,arrowsize=2,color='#00FFFF',linewidth=1.2)
-    plt.colorbar(CS, orientation='vertical', pad=.01, fraction=.05, shrink=.95)
-    plt.title(fgrid[5] if fgrid[5] == cgrid[5] else fgrid[5]+", "+cgrid[5])
+    if fp !="None": plt.colorbar(CS, orientation='vertical', pad=.01, fraction=.05, shrink=.95)
+    if fp !="None" and cp != "None":
+        plt.title(fgrid[5] if fgrid[5] == cgrid[5] else fgrid[5]+", "+cgrid[5])
+    elif fp == "None":
+        plt.title(cgrid[5])
+    elif cp == "None":
+        plt.title(fgrid[5])
     plt.xlabel(current_time[2:4] + '/' + current_time[4:6] + '/' + current_time[:2] + '    ' + current_time[-2:] + 'Z' + '\n' + bottomtxt.get())
     #plt.savefig(plotvar['PFUNC'] + '_' + plotvar['PAREA'] + '_' + current_time + '.pdf',bbox_inches='tight')
     plt.tight_layout(pad=2.08)
